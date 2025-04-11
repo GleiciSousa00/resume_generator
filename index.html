@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currículo Profissional</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #34495e;
+        font-weight: 600;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+      }
+
+      button {
+        background-color: #3498db;
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      }
+
+      .form-row {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .form-section {
+        display: none;
+      }
+
+      .form-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 1.5rem;
+          margin: 10px;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        input,
+        select {
+          padding: 0.7rem;
+          font-size: 0.95rem;
+        }
+
+        button {
+          padding: 0.9rem;
+          font-size: 1rem;
+        }
+
+        .form-group {
+          margin-bottom: 1.2rem;
+        }
+
+        .buttons-container {
+          flex-direction: column-reverse;
+          gap: 0.8rem;
+        }
+      }
+
+      @media (max-width: 320px) {
+        .container {
+          padding: 1rem;
+        }
+
+        h1 {
+          font-size: 1.3rem;
+        }
+
+        input,
+        select {
+          padding: 0.6rem;
+        }
+      }
+
+      .buttons-container {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .btn-secondary {
+        background-color: #95a5a6;
+      }
+
+      .btn-secondary:hover {
+        background-color: #7f8c8d;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: -0.5rem;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        width: auto;
+        margin: 0;
+      }
+
+      .checkbox-label {
+        display: inline;
+        font-weight: normal;
+      }
+
+      input[type="month"] {
+        font-family: inherit;
+      }
+
+      .descricao-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .textarea-container {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 300px;
+        padding: 1.2rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        resize: vertical;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        text-align: left;
+        line-height: 1.6;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        margin: 0;
+        box-sizing: border-box;
+        color: #2c3e50;
+        background-color: #ffffff;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3),
+          inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      textarea::placeholder {
+        color: #95a5a6;
+        font-style: italic;
+        opacity: 0.8;
+      }
+
+      .sugestoes-container {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .sugestao-item {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .sugestao-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .sugestao-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .add-button {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background-color: #2ecc71;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .add-button:hover {
+        background-color: #27ae60;
+      }
+
+      @media (max-width: 768px) {
+        .descricao-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form id="curriculoForm">
+        <div id="dadosPessoais" class="form-section active">
+          <h1>Informações de contato</h1>
+          <div class="form-group">
+            <label for="nomeCompleto">Nome Completo</label>
+            <input type="text" id="nomeCompleto" name="nomeCompleto" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="endereco">Endereço</label>
+            <input
+              type="text"
+              id="endereco"
+              name="endereco"
+              placeholder="Rua, Número, Bairro"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cidade">Cidade</label>
+              <input type="text" id="cidade" name="cidade" required />
+            </div>
+            <div class="form-group">
+              <label for="estado">Estado</label>
+              <select id="estado" name="estado" required>
+                <option value="">Selecione</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cep">CEP</label>
+              <input type="text" id="cep" name="cep" required maxlength="9" />
+            </div>
+          </div>
+
+          <button type="button" onclick="proximaEtapa()">Próxima Etapa</button>
+        </div>
+
+        <div id="formacaoAcademica" class="form-section">
+          <h1>Formação Acadêmica</h1>
+          <div class="form-group">
+            <label for="nivelEscolaridade">Nível de Escolaridade</label>
+            <select id="nivelEscolaridade" name="nivelEscolaridade" required>
+              <option value="">Selecione o nível</option>
+              <option value="Ensino Médio">Ensino Médio</option>
+              <option value="Ensino Técnico">Ensino Técnico</option>
+              <option value="Ensino Superior">Ensino Superior</option>
+              <option value="Pós-graduação">Pós-graduação</option>
+              <option value="Mestrado">Mestrado</option>
+              <option value="Doutorado">Doutorado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="curso">Nome do Curso</label>
+            <input type="text" id="curso" name="curso" required />
+          </div>
+
+          <div class="form-group">
+            <label for="instituicao">Instituição de Ensino</label>
+            <input type="text" id="instituicao" name="instituicao" required />
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+              <option value="">Selecione o status</option>
+              <option value="Cursando">Cursando</option>
+              <option value="Incompleto">Incompleto</option>
+              <option value="Completo">Completo</option>
+            </select>
+          </div>
+
+          <div class="buttons-container">
+            <button type="button" class="btn-secondary" onclick="voltar()">
+              Voltar
+            </button>
+            <button type="button" onclick="proximaExperiencia()">
+              Próxima Etapa
+            </button>
+          </div>
+        </div>
+
+        <div id="experienciaProfissional" class="form-section">
+          <h1>Experiência Profissional</h1>
+          <div class="form-group">
+            <label for="cargo">Título do Cargo</label>
+            <input type="text" id="cargo" name="cargo" required />
+          </div>
+
+          <div class="form-group">
+            <label for="empregador">Empregador</label>
+            <input type="text" id="empregador" name="empregador" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dataInicio">Data de Início</label>
+              <input type="month" id="dataInicio" name="dataInicio" required />
+            </div>
+            <div class="form-group">
+              <label for="dataTermino">Data de Término</label>
+              <input type="month" id="dataTermino" name="dataTermino" />
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <input
+              type="checkbox"
+              id="trabalhoAtual"
+              name="trabalhoAtual"
+              onchange="toggleDataTermino()"
+            />
+            <label for="trabalhoAtual" class="checkbox-label">
+              Eu trabalho aqui atualmente
+            </label>
+          </div>
+
+          <div class="buttons-container">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="voltarFormacao()"
+            >
+              Voltar
+            </button>
+            <button type="button" onclick="finalizar()">
+              Adicionar Detalhes
+            </button>
+          </div>
+        </div>
+
+        <div id="descricaoExperiencia" class="form-section">
+          <h1>Descreva sua experiência profissional</h1>
+
+          <div class="descricao-container">
+            <div class="textarea-container">
+              <textarea
+                id="descricaoDetalhada"
+                placeholder="Descreva suas responsabilidades, realizações e experiências neste cargo..."
+              ></textarea>
+            </div>
+
+            <div class="sugestoes-container">
+              <h3 style="margin-bottom: 1rem; color: #2c3e50">
+                Sugestões baseadas no seu cargo
+              </h3>
+              <div id="sugestoes">
+                <div class="sugestao-item" onclick="usarSugestao(this)">
+                  Desenvolvimento de interfaces responsivas para websites,
+                  adaptando a visualização da página para computadores e
+                  celulares, prezando pela experiência positiva dos usuários.
+                </div>
+                <div class="sugestao-item" onclick="usarSugestao(this)">
+                  Criação de novos softwares, seguindo regras e procedimentos de
+                  desenvolvimento dos códigos para atender às especificações dos
+                  projetos.
+                </div>
+                <div class="sugestao-item" onclick="usarSugestao(this)">
+                  Revisão de códigos de programação, identificando possíveis
+                  erros de escrita que comprometessem o funcionamento do
+                  programa e otimizando o desempenho.
+                </div>
+                <div class="sugestao-item" onclick="usarSugestao(this)">
+                  Análise do desempenho de sistemas e aplicações, identificando
+                  possíveis melhorias e implementando soluções para otimizar o
+                  funcionamento.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="buttons-container" style="margin-top: 1.5rem">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="voltarExperiencia()"
+            >
+              Voltar
+            </button>
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="adicionarExperiencia()"
+              style="background-color: #27ae60"
+            >
+              Adicionar Experiência
+            </button>
+            <button type="button" onclick="finalizarComDescricao()">
+              Finalizar Currículo
+            </button>
+          </div>
+        </div>
+
+        <div id="previewPDF" class="form-section">
+          <h1>Prévia do Currículo</h1>
+          <div
+            id="previewContent"
+            style="
+              background: white;
+              padding: 20px;
+              border: 1px solid #e0e0e0;
+              margin-bottom: 20px;
+            "
+          >
+            <!-- O conteúdo será preenchido via JavaScript -->
+          </div>
+          <div class="buttons-container">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="voltarDescricao()"
+            >
+              Voltar
+            </button>
+            <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      window.jsPDF = window.jspdf.jsPDF;
+
+      function proximaEtapa() {
+        document.getElementById("dadosPessoais").classList.remove("active");
+        document.getElementById("formacaoAcademica").classList.add("active");
+      }
+
+      function proximaExperiencia() {
+        document.getElementById("formacaoAcademica").classList.remove("active");
+        document
+          .getElementById("experienciaProfissional")
+          .classList.add("active");
+      }
+
+      function voltar() {
+        document.getElementById("formacaoAcademica").classList.remove("active");
+        document.getElementById("dadosPessoais").classList.add("active");
+      }
+
+      function voltarFormacao() {
+        document
+          .getElementById("experienciaProfissional")
+          .classList.remove("active");
+        document.getElementById("formacaoAcademica").classList.add("active");
+      }
+
+      function toggleDataTermino() {
+        const dataTermino = document.getElementById("dataTermino");
+        const trabalhoAtual = document.getElementById("trabalhoAtual");
+        dataTermino.disabled = trabalhoAtual.checked;
+        if (trabalhoAtual.checked) {
+          dataTermino.value = "";
+        }
+      }
+
+      function desenharCirculo(doc, x, y) {
+        doc.setDrawColor(0, 136, 255); // Cor azul
+        doc.circle(x, y, 3, "F");
+      }
+
+      function desenharLinha(doc, startX, startY, endY) {
+        doc.setDrawColor(0, 136, 255);
+        doc.setLineWidth(0.5);
+        doc.line(startX, startY, startX, endY);
+      }
+
+      function finalizar() {
+        document
+          .getElementById("experienciaProfissional")
+          .classList.remove("active");
+        document.getElementById("descricaoExperiencia").classList.add("active");
+      }
+
+      function finalizarComDescricao() {
+        document
+          .getElementById("descricaoExperiencia")
+          .classList.remove("active");
+        document.getElementById("previewPDF").classList.add("active");
+
+        const dadosPessoais = {
+          nomeCompleto: document.getElementById("nomeCompleto").value,
+          email: document.getElementById("email").value,
+          telefone: document.getElementById("telefone").value,
+          endereco: document.getElementById("endereco").value,
+          cidade: document.getElementById("cidade").value,
+          estado: document.getElementById("estado").value,
+          cep: document.getElementById("cep").value
+        };
+
+        const formacaoAcademica = {
+          nivelEscolaridade: document.getElementById("nivelEscolaridade").value,
+          curso: document.getElementById("curso").value,
+          instituicao: document.getElementById("instituicao").value,
+          status: document.getElementById("status").value
+        };
+
+        const experiencia = {
+          cargo: document.getElementById("cargo").value,
+          empregador: document.getElementById("empregador").value,
+          dataInicio: document.getElementById("dataInicio").value,
+          dataTermino: document.getElementById("trabalhoAtual").checked
+            ? "ATUAL"
+            : document.getElementById("dataTermino").value,
+          descricao: document.getElementById("descricaoDetalhada").value
+        };
+
+        const previewContent = document.getElementById("previewContent");
+        const iniciais = dadosPessoais.nomeCompleto
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .substring(0, 2);
+
+        // Converter a descrição em lista com bullets
+        const descricaoComBullets = experiencia.descricao
+          .split("\n")
+          .filter((linha) => linha.trim())
+          .map(
+            (linha) => `<li style="margin-bottom: 5px;">${linha.trim()}</li>`
+          )
+          .join("");
+
+        previewContent.innerHTML = `
+          <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+            <div style="width: 60px; height: 60px; background: #0088ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+              <span style="color: white; font-size: 24px; font-weight: bold;">${iniciais}</span>
+            </div>
+            <div>
+              <h2 style="color: #0088ff; font-size: 32px; margin: 0;">${
+                dadosPessoais.nomeCompleto
+              }</h2>
+              <p style="color: #333; margin: 5px 0;">+${
+                dadosPessoais.telefone
+              } | E: ${dadosPessoais.email}</p>
+              <p style="color: #333; margin: 5px 0;">${
+                dadosPessoais.endereco
+              }, ${dadosPessoais.cidade}, ${dadosPessoais.estado} ${
+          dadosPessoais.cep
+        }</p>
+            </div>
+          </div>
+
+          <div style="position: relative; margin-top: 40px; padding-left: 30px; border-left: 2px solid #0088ff;">
+            <h3 style="color: #0088ff; margin: 0 0 20px -30px;">FORMAÇÃO<br>ACADÊMICA</h3>
+            <div style="position: relative;">
+              <div style="width: 10px; height: 10px; background: #0088ff; border-radius: 50%; position: absolute; left: -36px; top: 5px;"></div>
+              <h4 style="color: #0088ff; font-size: 16px; margin: 0;">${
+                formacaoAcademica.nivelEscolaridade
+              } | ${formacaoAcademica.curso}</h4>
+              <p style="color: #333; margin: 5px 0;">${
+                formacaoAcademica.instituicao
+              }</p>
+              <p style="color: #333; margin: 5px 0;">Status - ${
+                formacaoAcademica.status
+              }</p>
+            </div>
+          </div>
+
+          <div style="position: relative; margin-top: 40px; padding-left: 30px; border-left: 2px solid #0088ff;">
+            <h3 style="color: #0088ff; margin: 0 0 20px -30px;">HISTÓRICO<br>PROFISSIONAL</h3>
+            <div style="position: relative;">
+              <div style="width: 10px; height: 10px; background: #0088ff; border-radius: 50%; position: absolute; left: -36px; top: 5px;"></div>
+              <h4 style="color: #0088ff; font-size: 16px; margin: 0;">${experiencia.cargo.toUpperCase()}</h4>
+              <p style="color: #333; margin: 5px 0;">${
+                experiencia.empregador
+              } | ${experiencia.dataInicio} - ${experiencia.dataTermino}</p>
+              <ul style="list-style-type: disc; margin: 10px 0; padding-left: 20px;">
+                ${descricaoComBullets}
+              </ul>
+            </div>
+          </div>
+        `;
+      }
+
+      function voltarDescricao() {
+        document.getElementById("previewPDF").classList.remove("active");
+        document.getElementById("descricaoExperiencia").classList.add("active");
+      }
+
+      function gerarPDF() {
+        const doc = new jsPDF();
+        const dadosPessoais = {
+          nomeCompleto: document.getElementById("nomeCompleto").value,
+          email: document.getElementById("email").value,
+          telefone: document.getElementById("telefone").value,
+          endereco: document.getElementById("endereco").value,
+          cidade: document.getElementById("cidade").value,
+          estado: document.getElementById("estado").value,
+          cep: document.getElementById("cep").value
+        };
+
+        const formacaoAcademica = {
+          nivelEscolaridade: document.getElementById("nivelEscolaridade").value,
+          curso: document.getElementById("curso").value,
+          instituicao: document.getElementById("instituicao").value,
+          status: document.getElementById("status").value
+        };
+
+        // Configurações iniciais
+        doc.setFont("helvetica");
+
+        // Iniciais no círculo
+        doc.setFillColor(0, 136, 255);
+        doc.circle(30, 25, 12, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        const iniciais = dadosPessoais.nomeCompleto
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .substring(0, 2);
+        doc.text(iniciais, 30, 28, { align: "center" });
+
+        // Nome principal
+        doc.setTextColor(0, 136, 255);
+        doc.setFontSize(24);
+        doc.text(dadosPessoais.nomeCompleto, 50, 25);
+
+        // Informações de contato
+        doc.setTextColor(51, 51, 51);
+        doc.setFontSize(10);
+        doc.text(
+          `+${dadosPessoais.telefone} | E: ${dadosPessoais.email}`,
+          50,
+          35
+        );
+        doc.text(
+          `${dadosPessoais.endereco}, ${dadosPessoais.cidade}, ${dadosPessoais.estado} ${dadosPessoais.cep}`,
+          50,
+          42
+        );
+
+        // Linha vertical do histórico
+        const startY = 60;
+        const lineX = 30;
+        doc.setDrawColor(0, 136, 255);
+        doc.setLineWidth(0.5);
+        doc.line(lineX, startY, lineX, 250);
+
+        // Título FORMAÇÃO ACADÊMICA
+        doc.setTextColor(0, 136, 255);
+        doc.setFontSize(14);
+        doc.text("FORMAÇÃO", 20, startY);
+        doc.text("ACADÊMICA", 20, startY + 6);
+
+        // Círculo na linha do tempo para formação
+        doc.circle(lineX, startY + 20, 3, "F");
+
+        // Formação Acadêmica
+        doc.setTextColor(0, 136, 255);
+        doc.setFontSize(12);
+        doc.text(
+          `${formacaoAcademica.nivelEscolaridade} | ${formacaoAcademica.curso}`,
+          40,
+          startY + 20
+        );
+
+        doc.setTextColor(51, 51, 51);
+        doc.setFontSize(11);
+        doc.text(formacaoAcademica.instituicao, 40, startY + 27);
+        doc.text(`Status - ${formacaoAcademica.status}`, 40, startY + 34);
+
+        // Título HISTÓRICO PROFISSIONAL
+        const profStartY = startY + 50;
+        doc.setTextColor(0, 136, 255);
+        doc.setFontSize(14);
+        doc.text("HISTÓRICO", 20, profStartY);
+        doc.text("PROFISSIONAL", 20, profStartY + 6);
+
+        // Experiência Profissional
+        const experiencia = {
+          cargo: document.getElementById("cargo").value,
+          empregador: document.getElementById("empregador").value,
+          dataInicio: document.getElementById("dataInicio").value,
+          dataTermino: document.getElementById("trabalhoAtual").checked
+            ? "ATUAL"
+            : document.getElementById("dataTermino").value,
+          descricao: document.getElementById("descricaoDetalhada").value
+        };
+
+        // Círculo na linha do tempo para experiência
+        doc.circle(lineX, profStartY + 20, 3, "F");
+
+        // Cargo e empresa
+        doc.setTextColor(0, 136, 255);
+        doc.setFontSize(12);
+        doc.text(experiencia.cargo.toUpperCase(), 40, profStartY + 20);
+
+        doc.setTextColor(51, 51, 51);
+        doc.setFontSize(11);
+        doc.text(
+          `${experiencia.empregador} | ${experiencia.dataInicio} - ${experiencia.dataTermino}`,
+          40,
+          profStartY + 27
+        );
+
+        // Descrição da experiência
+        if (experiencia.descricao) {
+          const linhasDescricao = doc.splitTextToSize(
+            experiencia.descricao,
+            150
+          );
+          let yPos = profStartY + 34;
+
+          linhasDescricao.forEach((linha) => {
+            if (linha.trim()) {
+              doc.text("•", 40, yPos);
+              doc.text(linha.trim(), 45, yPos);
+              yPos += 6;
+            }
+          });
+        }
+
+        doc.save("curriculo.pdf");
+        alert("Currículo exportado com sucesso!");
+      }
+
+      function voltarExperiencia() {
+        document
+          .getElementById("descricaoExperiencia")
+          .classList.remove("active");
+        document
+          .getElementById("experienciaProfissional")
+          .classList.add("active");
+      }
+
+      function usarSugestao(elemento) {
+        const textarea = document.getElementById("descricaoDetalhada");
+        const sugestao = elemento.textContent.trim();
+
+        if (textarea.value) {
+          // Adiciona um espaço antes da nova sugestão
+          textarea.value += " " + sugestao;
+        } else {
+          textarea.value = sugestao;
+        }
+
+        // Mantém o cursor no final do texto
+        textarea.focus();
+        textarea.setSelectionRange(
+          textarea.value.length,
+          textarea.value.length
+        );
+      }
+
+      function adicionarExperiencia() {
+        // Limpar os campos da experiência profissional
+        document.getElementById("cargo").value = "";
+        document.getElementById("empregador").value = "";
+        document.getElementById("dataInicio").value = "";
+        document.getElementById("dataTermino").value = "";
+        document.getElementById("trabalhoAtual").checked = false;
+        document.getElementById("dataTermino").disabled = false;
+
+        // Voltar para a tela de experiência profissional
+        document
+          .getElementById("descricaoExperiencia")
+          .classList.remove("active");
+        document
+          .getElementById("experienciaProfissional")
+          .classList.add("active");
+      }
+
+      // Máscara para CEP
+      document.getElementById("cep").addEventListener("input", function (e) {
+        let value = e.target.value;
+        value = value.replace(/\D/g, ""); // Remove tudo que não é dígito
+        value = value.replace(/^(\d{5})(\d)/, "$1-$2"); // Coloca hífen entre o 5º e 6º dígitos
+        e.target.value = value;
+      });
+    </script>
+  </body>
+</html>
